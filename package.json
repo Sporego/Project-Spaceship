@@ -1,36 +1,29 @@
 {
-  "name": "chat-test-2",
-  "version": "1.0.0",
-  "description": "chat test 2 with socket",
-  "main": "index.js",
+  "name": "project-spaceship",
+  "version": "2.0.0",
+  "description": "trying socket io again",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bingbingma/chat-test-2.git"
+    "url": "git+https://github.com/Sporego/Project-Spaceship.git"
   },
-  "author": "",
+  "author": "Caitlyn, David, Jay, Filbert",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/bingbingma/chat-test-2/issues"
+    "url": "https://github.com/Sporego/Project-Spaceship/issues"
   },
-  "homepage": "https://github.com/bingbingma/chat-test-2#readme",
+  "homepage": "https://github.com/Sporego/Project-Spaceship#readme",
   "dependencies": {
-    "express": "^4.16.4",
-    "path": "^0.12.7",
-    "bcrypt": "^3.0.6",
-    "body-parser": "^1.18.3",
     "dotenv": "^7.0.0",
-    "express-handlebars": "^3.0.2",
+    "express": "^4.16.4",
     "mysql2": "^1.6.5",
+    "path": "^0.12.7",
     "sequelize": "^5.7.6",
     "sequelize-cli": "^5.4.0",
-    "passport": "^0.4.0",
     "socket.io": "^2.2.0"
-  },
-  "devDependencies": {
-    "nodemon": "^1.18.11"
   }
 }
