@@ -1,14 +1,16 @@
 var express = require("express");
 var app = express();
 
+// Load
 let path = require("path");
 let server = require("http").createServer(app);
 let io = require("socket.io")(server);
-let port = process.env.PORT || 3000;
+let hbs = require("express-handlebars");
+//
 
-server.listen(port, () => {
-  console.log("Server listening at port http://localhost:" + port);
-});
+// Port
+let port = process.env.PORT || 3000;
+//
 
 // Use the express.static middleware to serve static content for the app from the "public" directory in the application directory.
 app.use(express.static(path.join(__dirname, "public")));
@@ -19,9 +21,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Set up Express Handlebars
-var exphbs = require("express-handlebars");
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-app.set("view engine", "handlebars");
+app.engine("hbs", hbs({ extname: "hbs", defaultLayout: "main" }));
+app.set("views");
+app.set("view engine", "hbs");
 
 // require routes
 // var routes = require("./controllers/spaceship_controller.js");
@@ -122,3 +124,12 @@ io.on("connection", socket => {
 // });
 // >>>>>>> master
 // >>>>>>> 81c37add5fbaaeb13081afe17d76c5de0e877913
+
+app.get("/testroot", function(req, res) {
+  res.render("filbert", { logoURL: "./public/assets/img/slack.svg" });
+});
+
+// listener
+server.listen(port, () => {
+  console.log("Server listening at port http://localhost:" + port);
+});
