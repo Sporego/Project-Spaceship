@@ -1,72 +1,18 @@
-<<<<<<< HEAD
-// including application routes and socket events, and set up of the application configuration
-// DEPENDENCIES
-const express = require("express");
-const http = require("http");
-const socketio = require("socket.io");
-const bodyParser = require("body-parser");
-
-const socketEvents = require("./config/socket");
-const routes = require("./config/routes");
-const config = require("./config/config");
-
-class Server {
-  constructor() {
-    this.port = process.env.PORT || 3000;
-    this.host = `localhost`;
-
-    this.app = express();
-    this.http = http.Server(this.app);
-    this.socket = socketio(this.http);
-  }
-
-  appConfig() {
-    this.app.use(bodyParser.json());
-    new config(this.app);
-  }
-
-  // INCLUDING APP ROUTES STARTS
-  includeRoutes() {
-    new routes(this.app).routesConfig();
-    new socketEvents(this.socket).socketConfig();
-  }
-  // INCLUDING APP ROUTES ENDS
-  appExecute() {
-    this.appConfig();
-    this.includeRoutes();
-
-    this.http.listen(this.port, this.host, () => {
-      console.log(`Server listening on http:${this.host}:${this.port}`);
-    });
-  }
-}
-
-const app = new Server();
-app.appExecute();
-
-// Filbert Code Below
-
-// const express = require("express");
-// const app = express();
-// const port = process.env.PORT || 3000;
-// require("dotenv").config();
-// app.get("/", (req, res) => {
-//   res.send(process.env.SECRET_KEY);
-// });
-// app.listen(port, () => {
-//   console.log(`Server is running on port ${port}.`);
-// });
-=======
-<<<<<<< HEAD
 var express = require("express");
 var app = express();
 
-// Set the port of our application
-// process.env.PORT lets the port be set by Heroku
-var PORT = process.env.PORT || 8080;
+let path = require("path");
+let server = require("http").createServer(app);
+let io = require("socket.io")(server);
+let port = process.env.PORT || 3000;
+
+server.listen(port, () => {
+  console.log("Server listening at port http://localhost:" + port);
+});
 
 // Use the express.static middleware to serve static content for the app from the "public" directory in the application directory.
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
+// app.use(express.static("public"));
 
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
@@ -86,11 +32,74 @@ app.set("view engine", "handlebars");
 // =============================================================
 require("./routes/api-routes.js")(app);
 
-// Start our server so that it can begin listening to client requests.
-app.listen(PORT, function() {
-  // Log (server-side) when our server has started
-  console.log(`Server listening on: http://localhost:${PORT}`);
+// Chatroom
+
+let numUsers = 0;
+
+io.on("connection", socket => {
+  let addedUser = false;
+
+  // when the client emits 'new message', this listen and executes
+  socket.on("new message", data => {
+    // we tell the client to execute 'new message'
+    socket.broadcast.emit("new message", {
+      username: socket.username,
+      message: data
+    });
+  });
+
+  // whtn the clitn emits 'add user', this listens and executes
+  socket.on("add user", username => {
+    if (addedUser) return;
+
+    // we store the username in the socket session for this client
+    socket.username = username;
+    ++numUsers;
+    addedUser = true;
+    socket.emit("login", {
+      numUsers: numUsers
+    });
+    // echo globally (all clients) that a person has connected
+    socket.broadcast.emit("user joined", {
+      username: socket.username,
+      numUsers: numUsers
+    });
+  });
+
+  // when the client emits 'typing', we broadcast it to others
+  socket.on("typing", () => {
+    socket.broadcast.emit("typing", {
+      username: socket.username
+    });
+  });
+
+  // when the client emits 'stop typing', we broadcast it to others
+  socket.on("stop typing", () => {
+    socket.broadcast.emit("stop typing", {
+      username: socket.username
+    });
+  });
+
+  //when the user disconnects.. perform this
+
+  socket.on("disconnect", () => {
+    if (addedUser) {
+      --numUsers;
+
+      //echo globally that this client has left
+      socket.broadcast.emit("user left", {
+        username: socket.username,
+        numUsers: numUsers
+      });
+    }
+  });
 });
+
+// Start our server so that it can begin listening to client requests.
+// app.listen(PORT, function() {
+//   // Log (server-side) when our server has started
+//   console.log(`Server listening on: http://localhost:${PORT}`);
+// });
 
 /**
  * Sequelize
@@ -100,16 +109,16 @@ app.listen(PORT, function() {
  * npx sequelize model:generate --name <MODEL_NAME> --atributes attr1:string,attr2:text,attr3:<TYPE>
  * npx sequelize db:migrate - going to create a new table based off of the model creatred from the previous command
  */
-=======
-const express = require("express");
-const app = express();
-const port = process.env.PORT || 3000;
-require("dotenv").config();
-app.get("/", (req, res) => {
-  res.send(process.env.SECRET_KEY);
-});
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}.`);
-});
->>>>>>> master
->>>>>>> 81c37add5fbaaeb13081afe17d76c5de0e877913
+// =======
+// const express = require("express");
+// const app = express();
+// const port = process.env.PORT || 3000;
+// require("dotenv").config();
+// app.get("/", (req, res) => {
+//   res.send(process.env.SECRET_KEY);
+// });
+// app.listen(port, () => {
+//   console.log(`Server is running on port ${port}.`);
+// });
+// >>>>>>> master
+// >>>>>>> 81c37add5fbaaeb13081afe17d76c5de0e877913
