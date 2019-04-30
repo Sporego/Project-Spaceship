@@ -8,11 +8,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      author: {
+      username: {
         type: Sequelize.STRING
       },
-      body: {
-        type: Sequelize.STRING
+      message: {
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,

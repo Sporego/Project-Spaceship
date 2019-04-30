@@ -9,12 +9,27 @@ var db = require("../models");
 // Routes
 // =============================================================
 module.exports = function(app) {
-  app.get("/", function(req, res) {
-    db.messages.findAll().then(results => console.log("results: ", results));
-    res.render("index");
+  app.get("/api/all", function(req, res) {
+    //constructor capitalized
+    dB.Message.findAll().then(function(results) {
+      res.json(results);
+      // res.render("index");
+    });
+    // Add a new message
+    app.post("/api/new", function(req, res) {
+      console.log("Message Data:");
+      console.log(req.body);
+
+      dB.Message.create({
+        username: req.body.username,
+        message: req.body.message
+      }).then(function(results) {
+        // `results` here would be the newly created message
+        res.status(200).end();
+      });
+    });
   });
 };
-
 // Get all messages
 //   app.get("/api/all", function(req, res) {
 //     // Finding all Messages, and then returning them to the user as JSON.

@@ -6,6 +6,8 @@ let server = require("http").createServer(app);
 let io = require("socket.io")(server);
 let port = process.env.PORT || 3000;
 
+let dB = require("./models");
+
 server.listen(port, () => {
   console.log("Server listening at port http://localhost:" + port);
 });
@@ -30,7 +32,7 @@ app.set("view engine", "handlebars");
 
 // Routes
 // =============================================================
-require("./routes/api-routes.js")(app);
+require("./routes/api-routes")(app);
 
 // Chatroom
 
@@ -46,7 +48,21 @@ io.on("connection", socket => {
       username: socket.username,
       message: data
     });
+    var newMessage = {
+      username: socket.username,
+      message: data
+    };
+    console.log(newMessage);
+
+    // Send an AJAX POST-request with jQuery
+    // app.post("/api/new", newMessage);
+    // var message = new dB.Message();
+    //import object on constructor function
+    dB.Message.create(newMessage);
+    console.log(dB);
   });
+
+  //newmessage is an object,
 
   // whtn the clitn emits 'add user', this listens and executes
   socket.on("add user", username => {
