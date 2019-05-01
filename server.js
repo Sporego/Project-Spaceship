@@ -129,6 +129,10 @@ app.get("/testroot", function(req, res) {
   res.render("filbert", { logoURL: "./public/assets/img/slack.svg" });
 });
 
+app.get("/chat", function(req, res) {
+  res.render("chatroom");
+});
+
 // listener
 server.listen(port, () => {
   console.log("Server listening at port http://localhost:" + port);
