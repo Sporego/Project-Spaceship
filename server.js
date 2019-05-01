@@ -8,9 +8,9 @@ let io = require("socket.io")(server);
 let hbs = require("express-handlebars");
 //
 
-// Port
+let dB = require("./models");
+
 let port = process.env.PORT || 3000;
-//
 
 // Use the express.static middleware to serve static content for the app from the "public" directory in the application directory.
 app.use(express.static(path.join(__dirname, "public")));
@@ -32,7 +32,7 @@ app.set("view engine", "hbs");
 
 // Routes
 // =============================================================
-require("./routes/api-routes.js")(app);
+require("./routes/api-routes")(app);
 
 // Chatroom
 
@@ -48,7 +48,21 @@ io.on("connection", socket => {
       username: socket.username,
       message: data
     });
+    var newMessage = {
+      username: socket.username,
+      message: data
+    };
+    console.log(newMessage);
+
+    // Send an AJAX POST-request with jQuery
+    // app.post("/api/new", newMessage);
+    // var message = new dB.Message();
+    //import object on constructor function
+    dB.Message.create(newMessage);
+    console.log(dB);
   });
+
+  //newmessage is an object,
 
   // whtn the clitn emits 'add user', this listens and executes
   socket.on("add user", username => {
